@@ -57,6 +57,10 @@ public class Vector3D {
         return (double) Math.round(l2 * 1000) / 1000;
     }
 
+    public Double lengthxyz(){
+        return Math.sqrt(this.x*this.x+this.y*this.y+this.z*this.z);
+    }
+
 
 
 

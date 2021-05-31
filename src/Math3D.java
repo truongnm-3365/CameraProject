@@ -6,6 +6,13 @@ public class Math3D {
     public Math3D() {
     }
 
+    public Vector3D VectorDirectProduct(Vector3D a1, Vector3D a2){
+        double t1 = a1.getY() * a2.getZ() - a2.getY() * a1.getZ();
+        double t2 = a1.getZ() * a2.getX() - a1.getX() * a2.getZ();
+        double t3 = a1.getX() * a2.getY() - a2.getX() * a1.getY();
+        return new Vector3D(t1,t2,t3);
+    }
+
     public boolean Is3PointInLine(Point a, Point b, Point c){
         Vector3D ab = new Vector3D(a,b);
         Vector3D ac = new Vector3D(a,c);
@@ -223,5 +230,93 @@ public class Math3D {
         if(count != 4)
             return false;
         return true;
+    }
+
+    public PlaneEquation PlaneXNotEqualZero(List<Point> cuboid){
+        for( int i = 0; i<cuboid.size(); i++){
+            if(cuboid.get(i).getX()!=0)
+                return new PlaneEquation(1,0,0,-cuboid.get(i).getX());
+
+        }
+        return null;
+    }
+    public PlaneEquation PlaneYNotEqualZero(List<Point> cuboid){
+        for( int i = 0; i<cuboid.size(); i++){
+            if(cuboid.get(i).getY()!=0)
+                return new PlaneEquation(0,1,0,-cuboid.get(i).getY());
+
+        }
+        return null;
+    }
+    public PlaneEquation PlaneZNotEqualZero(List<Point> cuboid){
+        for( int i = 0; i<cuboid.size(); i++){
+            if(cuboid.get(i).getZ()!=0)
+                return new PlaneEquation(0,0,1,-cuboid.get(i).getZ());
+
+        }
+        return null;
+    }
+
+    public PlaneEquation PlaneXEqualZero(){
+        return new PlaneEquation(1,0,0,0);
+    }
+
+    public PlaneEquation PlaneYEqualZero(){
+        return new PlaneEquation(0,1,0,0);
+    }
+
+    public double angleBetweenLineAndPlane(PlaneEquation l,PlaneEquation p){
+        Vector3D vp = new Vector3D(p.getA(),p.getB(),p.getC());
+        Vector3D vl = new Vector3D(l.getA(),l.getB(),l.getC());
+        return Math.toDegrees(Math.acos(Math.abs((p.getA()*l.getA()+p.getB()*l.getB()+p.getC()*l.getC())/(vp.lengthxyz()*vl.lengthxyz()))));
+    }
+
+    public boolean IsPointInPyramidInCuboid(Point p, Pyramid pyramid, List<Point> cuboid){
+        if(PlaneXNotEqualZero(cuboid).IsIncludePoint(pyramid.getP()) || PlaneXEqualZero().IsIncludePoint(pyramid.getP())){
+            PlaneEquation pHorizontal = new PlaneEquation(pyramid.getP(),0,1,0);
+            PlaneEquation pVertical = new PlaneEquation(pyramid.getP(), 0,0,1);
+            LineEquation pPyramidTop = new LineEquation(p,pyramid.getP());
+            LineEquation pRightAngleZEqualZero = new LineEquation(p,0,0,1);
+            LineEquation pRightAngleYEqualZero = new LineEquation(p,0,1,0);
+            Vector3D directProduct1 = VectorDirectProduct(pPyramidTop.VectorDirect(), pRightAngleZEqualZero.VectorDirect());
+            Vector3D directProduct2 = VectorDirectProduct(pPyramidTop.VectorDirect(), pRightAngleYEqualZero.VectorDirect());
+            PlaneEquation planeIncludeP1 = new PlaneEquation(p,directProduct1.getX(),directProduct1.getY(),directProduct1.getZ());
+            PlaneEquation planeIncludeP2 = new PlaneEquation(p,directProduct2.getX(),directProduct2.getY(),directProduct2.getZ());
+            double ph = angleBetweenLineAndPlane(planeIncludeP1,pHorizontal);
+            double pv = angleBetweenLineAndPlane(planeIncludeP2,pVertical);
+            if(ph - 0.000001 <= pyramid.getHorizontalFieldOfView()/2 && pv - 0.0000001<= pyramid.getVerticalFieldOfView()/2)
+                return true;
+        }
+        if(PlaneYNotEqualZero(cuboid).IsIncludePoint(pyramid.getP()) || PlaneYEqualZero().IsIncludePoint(pyramid.getP())){
+            PlaneEquation pHorizontal = new PlaneEquation(pyramid.getP(),1,0,0);
+            PlaneEquation pVertical = new PlaneEquation(pyramid.getP(), 0,0,1);
+            LineEquation pPyramidTop = new LineEquation(p,pyramid.getP());
+            LineEquation pRightAngleZEqualZero = new LineEquation(p,0,0,1);
+            LineEquation pRightAngleXEqualZero = new LineEquation(p,1,0,0);
+            Vector3D directProduct1 = VectorDirectProduct(pPyramidTop.VectorDirect(), pRightAngleZEqualZero.VectorDirect());
+            Vector3D directProduct2 = VectorDirectProduct(pPyramidTop.VectorDirect(), pRightAngleXEqualZero.VectorDirect());
+            PlaneEquation planeIncludeP1 = new PlaneEquation(p,directProduct1.getX(),directProduct1.getY(),directProduct1.getZ());
+            PlaneEquation planeIncludeP2 = new PlaneEquation(p,directProduct2.getX(),directProduct2.getY(),directProduct2.getZ());
+            double ph = angleBetweenLineAndPlane(planeIncludeP1,pHorizontal);
+            double pv = angleBetweenLineAndPlane(planeIncludeP2,pVertical);
+            if(ph-0.0000001 <= pyramid.getHorizontalFieldOfView()/2 && pv-0.000001<= pyramid.getVerticalFieldOfView()/2)
+                return true;
+        }
+        if(PlaneZNotEqualZero(cuboid).IsIncludePoint(pyramid.getP())){
+            PlaneEquation pHorizontal = new PlaneEquation(pyramid.getP(),1,0,0);
+            PlaneEquation pVertical = new PlaneEquation(pyramid.getP(), 0,1,0);
+            LineEquation pPyramidTop = new LineEquation(p,pyramid.getP());
+            LineEquation pRightAngleXEqualZero = new LineEquation(p,1,0,0);
+            LineEquation pRightAngleYEqualZero = new LineEquation(p,0,1,0);
+            Vector3D directProduct1 = VectorDirectProduct(pPyramidTop.VectorDirect(), pRightAngleYEqualZero.VectorDirect());
+            Vector3D directProduct2 = VectorDirectProduct(pPyramidTop.VectorDirect(), pRightAngleXEqualZero.VectorDirect());
+            PlaneEquation planeIncludeP1 = new PlaneEquation(p,directProduct1.getX(),directProduct1.getY(),directProduct1.getZ());
+            PlaneEquation planeIncludeP2 = new PlaneEquation(p,directProduct2.getX(),directProduct2.getY(),directProduct2.getZ());
+            double ph = angleBetweenLineAndPlane(planeIncludeP1,pHorizontal);
+            double pv = angleBetweenLineAndPlane(planeIncludeP2,pVertical);
+            if(ph -0.0000001 <= pyramid.getHorizontalFieldOfView()/2 && pv - 0.0000001 <= pyramid.getVerticalFieldOfView()/2)
+                return true;
+        }
+        return false;
     }
 }

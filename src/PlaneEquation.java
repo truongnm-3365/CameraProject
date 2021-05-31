@@ -7,6 +7,7 @@ public class PlaneEquation {
     private Point p1;
     private Point p2;
     private Point p3;
+    private Math3D tool = new Math3D();
     public PlaneEquation(double a, double b, double c, double d) {    // ax + by + cz + d = 0
         this.a = a;
         this.b = b;
@@ -17,7 +18,7 @@ public class PlaneEquation {
     public PlaneEquation(Point p1, Point p2, Point p3){
         Vector3D a1 = new Vector3D(p1,p2);
         Vector3D a2 = new Vector3D(p1,p3);
-        Vector3D dirProVect = VectorDirectProduct(a1,a2);
+        Vector3D dirProVect = tool.VectorDirectProduct(a1,a2);
         this.a = dirProVect.getX();
         this.b = dirProVect.getY();
         this.c = dirProVect.getZ();
@@ -26,6 +27,15 @@ public class PlaneEquation {
         this.p2 = p2;
         this.p3 = p3;
     }
+
+    public PlaneEquation(Point p1, double a, double b, double c){
+        this.a = a;
+        this.b = b;
+        this.c = c;
+        this.d = -a* p1.getX()-b*p1.getY()-c* p1.getY();
+    }
+
+
     public double getA() {
         return a;
     }
@@ -64,12 +74,7 @@ public class PlaneEquation {
         return false;
     }
 
-    public Vector3D VectorDirectProduct(Vector3D a1, Vector3D a2){
-        double t1 = a1.getY() * a2.getY() - a2.getY() * a1.getZ();
-        double t2 = a1.getZ() * a2.getX() - a1.getX() * a2.getZ();
-        double t3 = a1.getX() * a2.getY() - a2.getX() * a1.getY();
-        return new Vector3D(t1,t2,t3);
-    }
+
 
     public boolean IsPerpendicular(Vector3D v){
         if(v.getX() * this.b == v.getY() * this.a && v.getY() * this.c == v.getZ() * this.b  && v.getX() * c == v.getZ() * a)

@@ -56,6 +56,7 @@ public class Test {
             System.out.println(tool.IsSmallCuboidInBigCuboid(listPointObject,listPointRoom));
         }
         int k = i+1;
+        List<Pyramid> pyramidList = new ArrayList<Pyramid>(8);
         for(i = k;i<k+Integer.parseInt(listLine.get(k-1));i++){
             String [] cameraSpec = listLine.get(i).split("\\) ");
             String str2 = cameraSpec[0].replaceFirst("\\(","");
@@ -64,8 +65,12 @@ public class Test {
             Point cameraPoint = new Point(Double.parseDouble(xyz[0]),Double.parseDouble(xyz[1]),Double.parseDouble(xyz[2]));
             System.out.println(tool.IsPointInWall(cameraPoint,listPointRoom));
             System.out.println(Double.parseDouble(view[0])+", "+Double.parseDouble(view[1]));
+            pyramidList.add(new Pyramid(cameraPoint,Double.parseDouble(view[0]),Double.parseDouble(view[1])));
 
         }
+        Point testPoint = new Point(2,0,1);
+        boolean abv = tool.IsPointInPyramidInCuboid(testPoint,pyramidList.get(1),listPointRoom);
+        System.out.println(abv);
     }
 
 }
