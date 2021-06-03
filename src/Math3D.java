@@ -32,6 +32,7 @@ public class Math3D {
         Vector3D ab = new Vector3D(a,b);
         Vector3D ac = new Vector3D(a,c);
         Vector3D bc = new Vector3D(b,c);
+
         if(Is3PointInLine(a,b,c))
             return false;
         if(Math.abs(ab.length2() + ac.length2() - bc.length2()) < 0.0001)
@@ -66,6 +67,7 @@ public class Math3D {
         Vector3D ab = new Vector3D(a,b);
         Vector3D ac = new Vector3D(a,c);
         Vector3D bc = new Vector3D(b,c);
+
         if(ab.length() > ac.length() && ab.length() > bc.length()){
             Point midab = midPoint(a,b);
             Point d1 = new Point();
@@ -75,6 +77,7 @@ public class Math3D {
             if(d.equals(d1))
                 return true;
         }
+
         if(ac.length() > ab.length() && ac.length() > bc.length()){
             Point midac = midPoint(a,c);
             Point d1 = new Point();
@@ -84,6 +87,7 @@ public class Math3D {
             if(d.equals(d1))
                 return true;
         }
+
         if(bc.length() > ab.length() && bc.length() > ac.length()){
             Point midbc = midPoint(b,c);
             Point d1 = new Point();
@@ -99,22 +103,36 @@ public class Math3D {
     public boolean IsCuboid(List<Point> list){
         List<Point> listPoint = new ArrayList<Point>(8);
         listPoint.addAll(list);
-        int i=0, pointIndex;
+
+        int i,pointIndex1=0;
+        int pointIndex = 0;
+
+        double minRange = (new Vector3D(list.get(0),list.get(1))).length();
         double minArea = triangleArea(list.get(0),list.get(1),list.get(2));
-        pointIndex = 2;
-        for(i=2; i < list.size();i++){
-            if(triangleArea(list.get(0),list.get(1),list.get(i)) <= minArea){
-                minArea = triangleArea(list.get(0),list.get(1),list.get(i));
+
+        for(i=2;i<list.size();i++){
+            Vector3D v = new Vector3D(list.get(0),list.get(i));
+            if (v.length() <= minRange){
+                minRange = v.length();
+                pointIndex1 = i;
+            }
+        }
+
+        for(i=1; i < list.size() && i!=pointIndex1;i++){
+            if(triangleArea(list.get(0),list.get(pointIndex1),list.get(i)) <= minArea){
+                minArea = triangleArea(list.get(0),list.get(pointIndex1),list.get(i));
                 pointIndex = i;
             }
         }
-        PlaneEquation p = new PlaneEquation(list.get(0),list.get(1),list.get(pointIndex));
+
+        PlaneEquation p = new PlaneEquation(list.get(0),list.get(pointIndex1),list.get(pointIndex));
         Point p1 = list.get(0);
-        Point p2 = list.get(1);
+        Point p2 = list.get(pointIndex1);
         Point p3 = list.get(pointIndex);
         listPoint.remove(p1);
         listPoint.remove(p2);
         listPoint.remove(p3);
+
         for(i=0;i<listPoint.size();i++){
             if(p.IsIncludePoint(listPoint.get(i))){
                if(!IsRectangle(p1,p2,p3,listPoint.get(i)))
@@ -140,6 +158,7 @@ public class Math3D {
         Vector3D od3 = new Vector3D(o,d3);
         Vector3D od4 = new Vector3D(o,d4);
         double edge = 0;
+
         if(p.IsPerpendicular(od1)){
             return od1.length();
         }
@@ -154,6 +173,7 @@ public class Math3D {
         }
         return 0;
     }
+
     public double xMax (List <Point> list){
         double max = list.get(0).getX();
         for(int i = 0 ;i < list.size();i++){
@@ -162,6 +182,7 @@ public class Math3D {
         }
         return max;
     }
+
     public double yMax (List <Point> list){
         double max = list.get(0).getY();
         for(int i = 0 ;i < list.size();i++){
@@ -170,6 +191,7 @@ public class Math3D {
         }
         return max;
     }
+
     public double zMax (List <Point> list){
         double max = list.get(0).getZ();
         for(int i = 0 ;i < list.size();i++){
@@ -178,6 +200,7 @@ public class Math3D {
         }
         return max;
     }
+
     public double xMin (List <Point> list){
         double min = list.get(0).getX();
         for(int i = 0 ;i < list.size();i++){
@@ -186,6 +209,7 @@ public class Math3D {
         }
         return min;
     }
+
     public double yMin (List <Point> list){
         double min = list.get(0).getY();
         for(int i = 0 ;i < list.size();i++){
@@ -194,6 +218,7 @@ public class Math3D {
         }
         return min;
     }
+
     public double zMin (List <Point> list){
         double min = list.get(0).getZ();
         for(int i = 0 ;i < list.size();i++){
@@ -221,12 +246,14 @@ public class Math3D {
 
     public boolean IsSmallCuboidInBigCuboid(List<Point> smallCuboid, List<Point> bigCuboid){
         int count = 0;
+
         for(int i = 0; i<smallCuboid.size(); i++){
             if(!IsPointInCuboid(smallCuboid.get(i),bigCuboid))
                 return false;
             if(smallCuboid.get(0).getZ() == smallCuboid.get(i).getZ())
                 count++;
         }
+
         if(count != 4)
             return false;
         return true;
@@ -240,6 +267,7 @@ public class Math3D {
         }
         return null;
     }
+
     public PlaneEquation PlaneYNotEqualZero(List<Point> cuboid){
         for( int i = 0; i<cuboid.size(); i++){
             if(cuboid.get(i).getY()!=0)
@@ -248,6 +276,7 @@ public class Math3D {
         }
         return null;
     }
+
     public PlaneEquation PlaneZNotEqualZero(List<Point> cuboid){
         for( int i = 0; i<cuboid.size(); i++){
             if(cuboid.get(i).getZ()!=0)
@@ -275,45 +304,61 @@ public class Math3D {
         if(PlaneXNotEqualZero(cuboid).IsIncludePoint(pyramid.getP()) || PlaneXEqualZero().IsIncludePoint(pyramid.getP())){
             PlaneEquation pHorizontal = new PlaneEquation(pyramid.getP(),0,1,0);
             PlaneEquation pVertical = new PlaneEquation(pyramid.getP(), 0,0,1);
+
             LineEquation pPyramidTop = new LineEquation(p,pyramid.getP());
             LineEquation pRightAngleZEqualZero = new LineEquation(p,0,0,1);
             LineEquation pRightAngleYEqualZero = new LineEquation(p,0,1,0);
+
             Vector3D directProduct1 = VectorDirectProduct(pPyramidTop.VectorDirect(), pRightAngleZEqualZero.VectorDirect());
             Vector3D directProduct2 = VectorDirectProduct(pPyramidTop.VectorDirect(), pRightAngleYEqualZero.VectorDirect());
+
             PlaneEquation planeIncludeP1 = new PlaneEquation(p,directProduct1.getX(),directProduct1.getY(),directProduct1.getZ());
             PlaneEquation planeIncludeP2 = new PlaneEquation(p,directProduct2.getX(),directProduct2.getY(),directProduct2.getZ());
+
             double ph = angleBetweenLineAndPlane(planeIncludeP1,pHorizontal);
             double pv = angleBetweenLineAndPlane(planeIncludeP2,pVertical);
+
             if(ph - 0.000001 <= pyramid.getHorizontalFieldOfView()/2 && pv - 0.0000001<= pyramid.getVerticalFieldOfView()/2)
                 return true;
         }
+
         if(PlaneYNotEqualZero(cuboid).IsIncludePoint(pyramid.getP()) || PlaneYEqualZero().IsIncludePoint(pyramid.getP())){
             PlaneEquation pHorizontal = new PlaneEquation(pyramid.getP(),1,0,0);
             PlaneEquation pVertical = new PlaneEquation(pyramid.getP(), 0,0,1);
+
             LineEquation pPyramidTop = new LineEquation(p,pyramid.getP());
             LineEquation pRightAngleZEqualZero = new LineEquation(p,0,0,1);
             LineEquation pRightAngleXEqualZero = new LineEquation(p,1,0,0);
+
             Vector3D directProduct1 = VectorDirectProduct(pPyramidTop.VectorDirect(), pRightAngleZEqualZero.VectorDirect());
             Vector3D directProduct2 = VectorDirectProduct(pPyramidTop.VectorDirect(), pRightAngleXEqualZero.VectorDirect());
+
             PlaneEquation planeIncludeP1 = new PlaneEquation(p,directProduct1.getX(),directProduct1.getY(),directProduct1.getZ());
             PlaneEquation planeIncludeP2 = new PlaneEquation(p,directProduct2.getX(),directProduct2.getY(),directProduct2.getZ());
+
             double ph = angleBetweenLineAndPlane(planeIncludeP1,pHorizontal);
             double pv = angleBetweenLineAndPlane(planeIncludeP2,pVertical);
+
             if(ph-0.0000001 <= pyramid.getHorizontalFieldOfView()/2 && pv-0.000001<= pyramid.getVerticalFieldOfView()/2)
                 return true;
         }
         if(PlaneZNotEqualZero(cuboid).IsIncludePoint(pyramid.getP())){
             PlaneEquation pHorizontal = new PlaneEquation(pyramid.getP(),1,0,0);
             PlaneEquation pVertical = new PlaneEquation(pyramid.getP(), 0,1,0);
+
             LineEquation pPyramidTop = new LineEquation(p,pyramid.getP());
             LineEquation pRightAngleXEqualZero = new LineEquation(p,1,0,0);
             LineEquation pRightAngleYEqualZero = new LineEquation(p,0,1,0);
+
             Vector3D directProduct1 = VectorDirectProduct(pPyramidTop.VectorDirect(), pRightAngleYEqualZero.VectorDirect());
             Vector3D directProduct2 = VectorDirectProduct(pPyramidTop.VectorDirect(), pRightAngleXEqualZero.VectorDirect());
+
             PlaneEquation planeIncludeP1 = new PlaneEquation(p,directProduct1.getX(),directProduct1.getY(),directProduct1.getZ());
             PlaneEquation planeIncludeP2 = new PlaneEquation(p,directProduct2.getX(),directProduct2.getY(),directProduct2.getZ());
+
             double ph = angleBetweenLineAndPlane(planeIncludeP1,pHorizontal);
             double pv = angleBetweenLineAndPlane(planeIncludeP2,pVertical);
+
             if(ph -0.0000001 <= pyramid.getHorizontalFieldOfView()/2 && pv - 0.0000001 <= pyramid.getVerticalFieldOfView()/2)
                 return true;
         }
