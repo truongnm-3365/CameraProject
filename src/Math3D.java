@@ -364,4 +364,23 @@ public class Math3D {
         }
         return false;
     }
+
+
+    public boolean IsStadardAxisCuboid(List<Point> list){
+        int count =0;
+        for(int i = 0; i< list.size();i++){
+            if(list.get(i).getX()==0 && list.get(i).getY()==0 && list.get(i).getZ() == 0)
+                count++;
+            if(list.get(i).getX()!=0 && list.get(i).getY()==0 && list.get(i).getZ() == 0)
+                count++;
+            if(list.get(i).getX()==0 && list.get(i).getY()!=0 && list.get(i).getZ() == 0)
+                count++;
+            if(list.get(i).getX()==0 && list.get(i).getY()==0 && list.get(i).getZ() != 0)
+                count++;
+        }
+        if(count ==4)
+            return true;
+
+        return false;
+    }
 }

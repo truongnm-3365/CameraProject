@@ -40,6 +40,7 @@ public class Test {
             String [] xyz = points[i].split(", ");
             listPointRoom.add(new Point(Double.parseDouble(xyz[0]),Double.parseDouble(xyz[1]),Double.parseDouble(xyz[2])));
         }
+        System.out.println(tool.IsStadardAxisCuboid(listPointRoom));
         System.out.println(tool.IsCuboid(listPointRoom));
         System.out.println(Integer.parseInt(listLine.get(1)));
         int i;
@@ -52,6 +53,7 @@ public class Test {
                 String [] xyz = pointS[j].split(", ");
                 listPointObject.add(new Point(Double.parseDouble(xyz[0]),Double.parseDouble(xyz[1]),Double.parseDouble(xyz[2])));
             }
+
             System.out.println(tool.IsCuboid(listPointObject));
             System.out.println(tool.IsSmallCuboidInBigCuboid(listPointObject,listPointRoom));
         }
