@@ -234,6 +234,12 @@ public class Math3D {
         return false;
     }
 
+    public boolean IsPointInCuboidNotFace(Point p,List<Point> cuboid){
+        if(p.getX()>xMin(cuboid) && p.getX()<xMax(cuboid) && p.getY()>yMin(cuboid) && p.getY()<yMax(cuboid) && p.getZ()>zMin(cuboid) && p.getZ()<zMax(cuboid))
+            return true;
+        return false;
+    }
+
     public boolean IsPointInWall(Point p, List<Point> cuboid){
         if(p.getX()==xMin(cuboid) || p.getX()==xMax(cuboid) && p.getY()>=yMin(cuboid) && p.getY()<=yMax(cuboid) && p.getZ()>=zMin(cuboid) && p.getZ()<=zMax(cuboid))
             return true;
@@ -292,6 +298,10 @@ public class Math3D {
 
     public PlaneEquation PlaneYEqualZero(){
         return new PlaneEquation(0,1,0,0);
+    }
+
+    public PlaneEquation PlaneZEqualZero(){
+        return new PlaneEquation(0,0,1,0);
     }
 
     public double angleBetweenLineAndPlane(PlaneEquation l,PlaneEquation p){
@@ -383,4 +393,5 @@ public class Math3D {
 
         return false;
     }
+
 }

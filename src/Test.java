@@ -44,6 +44,8 @@ public class Test {
         System.out.println(tool.IsCuboid(listPointRoom));
         System.out.println(Integer.parseInt(listLine.get(1)));
         int i;
+
+        List<Object3D> object3DList = new ArrayList<>();
         for(i=2;i<2+Integer.parseInt(listLine.get(1));i++){
             String str2 = listLine.get(i).replaceFirst("\\(","");
             String str3 = str2.substring(0, str2.length()-1);
@@ -53,10 +55,14 @@ public class Test {
                 String [] xyz = pointS[j].split(", ");
                 listPointObject.add(new Point(Double.parseDouble(xyz[0]),Double.parseDouble(xyz[1]),Double.parseDouble(xyz[2])));
             }
-
+            object3DList.add(new Object3D(listPointObject));
             System.out.println(tool.IsCuboid(listPointObject));
             System.out.println(tool.IsSmallCuboidInBigCuboid(listPointObject,listPointRoom));
+
         }
+        System.out.println(object3DList.get(0).IsInvalidIn(object3DList));
+        System.out.println(object3DList.get(1).IsInvalidIn(object3DList));
+
         int k = i+1;
         List<Pyramid> pyramidList = new ArrayList<Pyramid>(8);
         for(i = k;i<k+Integer.parseInt(listLine.get(k-1));i++){

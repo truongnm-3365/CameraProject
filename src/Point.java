@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Objects;
 
 public class Point {
@@ -50,4 +51,10 @@ public class Point {
     public int hashCode() {
         return Objects.hash(x, y, z);
     }
+
+    public double rangeTo (PlaneEquation planeEquation){
+        return Math.abs(x*planeEquation.getA()+y* planeEquation.getB()+x* planeEquation.getC()+ planeEquation.getD())/Math.sqrt(x*x+y*y+z*z);
+    }
+
+
 }
