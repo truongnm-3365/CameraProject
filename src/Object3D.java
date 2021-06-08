@@ -1,63 +1,53 @@
 import java.util.ArrayList;
 import java.util.List;
 
-public class Object3D {
-    private List<Point> listPoint = new ArrayList<>();
+public class Object3D extends Cuboid{
 
     public Object3D() {
     }
 
     public Object3D(List<Point> listPoint) {
-        this.listPoint = listPoint;
+        super(listPoint);
     }
 
-    public List<Point> getListPoint() {
-        return listPoint;
-    }
 
-    public void setListPoint(List<Point> listPoint) {
-        this.listPoint = listPoint;
-    }
 
 
     public boolean IsInFloor(){
-        Math3D tool = new Math3D();
-        for(int i = 0 ;i<listPoint.size();i++){
-            if(tool.PlaneZEqualZero().IsIncludePoint(listPoint.get(i)))
+        for(int i = 0 ;i<this.getPointList().size();i++){
+            if(Math3D.PlaneZEqualZero().IsIncludePoint(this.getPointList().get(i)))
                 return true;
         }
         return false;
     }
 
     public double height(){
-        Math3D tool = new Math3D();
-        double maxRange = listPoint.get(0).rangeTo(tool.PlaneZNotEqualZero(listPoint));;
-        for(int i =0 ;i<listPoint.size();i++){
-            if(listPoint.get(i).rangeTo(tool.PlaneZEqualZero())>= maxRange)
-                maxRange = listPoint.get(i).rangeTo(tool.PlaneZNotEqualZero(listPoint));
+        double maxRange = this.getPointList().get(0).rangeTo(this.PlaneZNotEqualZero());;
+        for(int i =0 ;i<this.getPointList().size();i++){
+            if(this.getPointList().get(i).rangeTo(this.PlaneZNotEqualZero())>= maxRange)
+                maxRange = this.getPointList().get(i).rangeTo(this.PlaneZNotEqualZero());
         }
         return maxRange;
     }
 
     public PlaneEquation planeBottom(){
-        double minZ = listPoint.get(0).getZ();
-        for(int i = 0;i<listPoint.size();i++){
-            if(listPoint.get(i).getZ()<=minZ)
-                minZ = listPoint.get(i).getZ();
+        double minZ = this.getPointList().get(0).getZ();
+        for(int i = 0;i<this.getPointList().size();i++){
+            if(this.getPointList().get(i).getZ()<=minZ)
+                minZ = this.getPointList().get(i).getZ();
         }
         return new PlaneEquation(0,0,1,-minZ);
     }
     public PlaneEquation planeTop(){
-        double maxZ = listPoint.get(0).getZ();
-        for(int i = 0;i<listPoint.size();i++){
-            if(listPoint.get(i).getZ()>=maxZ)
-                maxZ = listPoint.get(i).getZ();
+        double maxZ = this.getPointList().get(0).getZ();
+        for(int i = 0;i<this.getPointList().size();i++){
+            if(this.getPointList().get(i).getZ()>=maxZ)
+                maxZ = this.getPointList().get(i).getZ();
         }
         return new PlaneEquation(0,0,1,-maxZ);
     }
 
     public boolean IsInvalidIn(List<Object3D> list){
-        Math3D tool = new Math3D();
         List<Object3D> listObject = new ArrayList<Object3D>();
         listObject.addAll(list);
         listObject.remove(this);
@@ -66,20 +56,22 @@ public class Object3D {
         if(listObject.size()!=0){
             if(this.IsInFloor()){
                 for(int i = 0;i<listObject.size();i++){
-                    for(int j = 0;j<listPoint.size();j++){
-                        if(tool.IsPointInCuboidNotFace(listPoint.get(j),listObject.get(i).getListPoint()))
+                    for(int j = 0;j<this.getPointList().size();j++){
+                        if(listObject.get(i).IsPointInCuboidNotFace(this.getPointList().get(j)))
                             return false;
                     }
                 }
                 return true;
             }else{
                 for(int i = 0;i<listObject.size();i++){
-                    for(int j = 0;j<listPoint.size();j++){
-                        if(tool.IsPointInCuboidNotFace(listPoint.get(j),listObject.get(i).getListPoint()))
+                    for(int j = 0;j<this.getPointList().size();j++){
+                        if(listObject.get(i).IsPointInCuboidNotFace(this.getPointList().get(j)))
                             return false;
-                        if(Math.abs(listPoint.get(j).rangeTo(listObject.get(i).planeBottom())-listObject.get(i).height())<0.0001 && tool.IsPointInWall(listPoint.get(i),listObject.get(i).getListPoint()))
+                        double a =this.getPointList().get(j).rangeTo(listObject.get(i).planeBottom());
+                        double b = listObject.get(i).height();
+                        if(Math.abs(a-b)<0.0001 && listObject.get(i).IsPointInFace(this.getPointList().get(j)))
                             check1++;
-                        if(Math.abs(listPoint.get(j).rangeTo(listObject.get(i).planeTop())-this.height())<0.0001)
+                        if(Math.abs(this.getPointList().get(j).rangeTo(listObject.get(i).planeTop())-this.height())<0.0001)
                             check2++;
                     }
 
@@ -92,6 +84,37 @@ public class Object3D {
                 return true;
         }
 
+        return false;
+    }
+
+    public List<PlaneEquation> TwoFaceDirectCamera(Pyramid p,Cuboid cuboid){
+        List<PlaneEquation> list = new ArrayList<>(2);
+        PlaneEquation p1 = p.PlaneIncludePeakIn(cuboid);
+        PlaneEquation p2 = new PlaneEquation(this.getPointList().get(0),p1.getA(),p1.getB(),p1.getC());
+        list.add(p2);
+        for(int i = 0 ;i<this.getPointList().size();i++){
+            PlaneEquation p3 = new PlaneEquation(this.getPointList().get(i),p1.getA(),p1.getB(),p1.getC());
+            if(!p2.equals(p3))
+                list.add(p3);
+        }
+        return list;
+    }
+
+    public boolean IsThrouthLineSegment(Pyramid pyramid, Point point,Cuboid cuboid){
+        LineEquation line = new LineEquation(pyramid.getP(),point);
+        PlaneEquation plane1 = this.TwoFaceDirectCamera(pyramid,cuboid).get(0);
+        PlaneEquation plane2 = this.TwoFaceDirectCamera(pyramid,cuboid).get(1);
+        Point p1 = line.IntersectionWithPlane(plane1);
+        Point p2 = line.IntersectionWithPlane(plane2);
+        double disPeakPointP1 = (new Vector3D(pyramid.getP(),p1)).length();
+        double disPeakPointP2 = (new Vector3D(pyramid.getP(),p2)).length();
+        double disPeakPointPoint = (new Vector3D(pyramid.getP(),point)).length();
+        if(disPeakPointPoint >= disPeakPointP1 || disPeakPointP1 >= disPeakPointP2){
+            if(this.IsPointInCuboid(p1))
+                return true;
+            if(this.IsPointInCuboid(p2))
+                return true;
+        }
         return false;
     }
 

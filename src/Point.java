@@ -47,13 +47,10 @@ public class Point {
         return Math.abs(point.getX()-this.x) < 0.0001 && Math.abs(point.getY() - this.y) < 0.0001 && Math.abs(point.getZ()- this.z) < 0.0001;
     }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(x, y, z);
-    }
 
     public double rangeTo (PlaneEquation planeEquation){
-        return Math.abs(x*planeEquation.getA()+y* planeEquation.getB()+x* planeEquation.getC()+ planeEquation.getD())/Math.sqrt(x*x+y*y+z*z);
+        double d = Math.sqrt(planeEquation.getA()* planeEquation.getA()+planeEquation.getB()* planeEquation.getB()+planeEquation.getC()* planeEquation.getC());
+        return Math.abs(this.x*planeEquation.getA()+ this.y* planeEquation.getB()+ this.z* planeEquation.getC()+ planeEquation.getD())/d;
     }
 
 

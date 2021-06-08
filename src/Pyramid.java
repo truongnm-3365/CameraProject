@@ -1,5 +1,8 @@
+import java.util.List;
+
+
 public class Pyramid {
-    private Point p;
+    private Point peakPoint;
     private double horizontalFieldOfView;
     private double verticalFieldOfView;
     private double height;
@@ -8,24 +11,24 @@ public class Pyramid {
     }
 
     public Pyramid(Point p, double horizontalFieldOfView, double verticalFieldOfView) {
-        this.p = p;
+        this.peakPoint = p;
         this.horizontalFieldOfView = horizontalFieldOfView;
         this.verticalFieldOfView = verticalFieldOfView;
     }
 
     public Pyramid(Point p, double horizontalFieldOfView, double verticalFieldOfView, double height) {
-        this.p = p;
+        this.peakPoint = p;
         this.horizontalFieldOfView = horizontalFieldOfView;
         this.verticalFieldOfView = verticalFieldOfView;
         this.height = height;
     }
 
     public Point getP() {
-        return p;
+        return peakPoint;
     }
 
     public void setP(Point p) {
-        this.p = p;
+        this.peakPoint = p;
     }
 
     public double getHorizontalFieldOfView() {
@@ -51,4 +54,24 @@ public class Pyramid {
     public void setHeight(double height) {
         this.height = height;
     }
+
+    public PlaneEquation PlaneIncludePeakIn(Cuboid cuboid){
+        if(cuboid.PlaneXNotEqualZero().IsIncludePoint(peakPoint))
+            return cuboid.PlaneXNotEqualZero();
+        else if(cuboid.PlaneYNotEqualZero().IsIncludePoint(peakPoint))
+            return cuboid.PlaneYNotEqualZero();
+        else if(cuboid.PlaneZNotEqualZero().IsIncludePoint(peakPoint))
+            return cuboid.PlaneZNotEqualZero();
+        else if(Math3D.PlaneZEqualZero().IsIncludePoint(peakPoint))
+            return Math3D.PlaneXEqualZero();
+        else if(Math3D.PlaneYEqualZero().IsIncludePoint(peakPoint))
+            return Math3D.PlaneYEqualZero();
+        else
+            return Math3D.PlaneZEqualZero();
+
+    }
+
+
+
+
 }

@@ -107,28 +107,28 @@ public class Math3D {
         int i,pointIndex1=0;
         int pointIndex = 0;
 
-        double minRange = (new Vector3D(list.get(0),list.get(1))).length();
-        double minArea = triangleArea(list.get(0),list.get(1),list.get(2));
+        double minRange = (new Vector3D(listPoint.get(0),listPoint.get(1))).length();
+        double minArea = triangleArea(listPoint.get(0),listPoint.get(1),listPoint.get(2));
 
-        for(i=2;i<list.size();i++){
-            Vector3D v = new Vector3D(list.get(0),list.get(i));
+        for(i=2;i<listPoint.size();i++){
+            Vector3D v = new Vector3D(listPoint.get(0),listPoint.get(i));
             if (v.length() <= minRange){
                 minRange = v.length();
                 pointIndex1 = i;
             }
         }
 
-        for(i=1; i < list.size() && i!=pointIndex1;i++){
-            if(triangleArea(list.get(0),list.get(pointIndex1),list.get(i)) <= minArea){
-                minArea = triangleArea(list.get(0),list.get(pointIndex1),list.get(i));
+        for(i=1; i < listPoint.size() && i!=pointIndex1;i++){
+            if(triangleArea(listPoint.get(0),listPoint.get(pointIndex1),listPoint.get(i)) <= minArea){
+                minArea = triangleArea(listPoint.get(0),listPoint.get(pointIndex1),listPoint.get(i));
                 pointIndex = i;
             }
         }
 
-        PlaneEquation p = new PlaneEquation(list.get(0),list.get(pointIndex1),list.get(pointIndex));
-        Point p1 = list.get(0);
-        Point p2 = list.get(pointIndex1);
-        Point p3 = list.get(pointIndex);
+        PlaneEquation p = new PlaneEquation(listPoint.get(0),listPoint.get(pointIndex1),listPoint.get(pointIndex));
+        Point p1 = listPoint.get(0);
+        Point p2 = listPoint.get(pointIndex1);
+        Point p3 = listPoint.get(pointIndex);
         listPoint.remove(p1);
         listPoint.remove(p2);
         listPoint.remove(p3);
@@ -174,133 +174,17 @@ public class Math3D {
         return 0;
     }
 
-    public double xMax (List <Point> list){
-        double max = list.get(0).getX();
-        for(int i = 0 ;i < list.size();i++){
-            if(list.get(i).getX() >= max)
-                max = list.get(i).getX();
-        }
-        return max;
-    }
+    
 
-    public double yMax (List <Point> list){
-        double max = list.get(0).getY();
-        for(int i = 0 ;i < list.size();i++){
-            if(list.get(i).getY() >= max)
-                max = list.get(i).getY();
-        }
-        return max;
-    }
-
-    public double zMax (List <Point> list){
-        double max = list.get(0).getZ();
-        for(int i = 0 ;i < list.size();i++){
-            if(list.get(i).getZ() >= max)
-                max = list.get(i).getZ();
-        }
-        return max;
-    }
-
-    public double xMin (List <Point> list){
-        double min = list.get(0).getX();
-        for(int i = 0 ;i < list.size();i++){
-            if(list.get(i).getX() <= min)
-                min = list.get(i).getX();
-        }
-        return min;
-    }
-
-    public double yMin (List <Point> list){
-        double min = list.get(0).getY();
-        for(int i = 0 ;i < list.size();i++){
-            if(list.get(i).getY() <= min)
-                min = list.get(i).getY();
-        }
-        return min;
-    }
-
-    public double zMin (List <Point> list){
-        double min = list.get(0).getZ();
-        for(int i = 0 ;i < list.size();i++){
-            if(list.get(i).getZ() <= min)
-                min = list.get(i).getZ();
-        }
-        return min;
-    }
-
-    public boolean IsPointInCuboid(Point p,List<Point> cuboid){
-        if(p.getX()>=xMin(cuboid) && p.getX()<=xMax(cuboid) && p.getY()>=yMin(cuboid) && p.getY()<=yMax(cuboid) && p.getZ()>=zMin(cuboid) && p.getZ()<=zMax(cuboid))
-            return true;
-        return false;
-    }
-
-    public boolean IsPointInCuboidNotFace(Point p,List<Point> cuboid){
-        if(p.getX()>xMin(cuboid) && p.getX()<xMax(cuboid) && p.getY()>yMin(cuboid) && p.getY()<yMax(cuboid) && p.getZ()>zMin(cuboid) && p.getZ()<zMax(cuboid))
-            return true;
-        return false;
-    }
-
-    public boolean IsPointInWall(Point p, List<Point> cuboid){
-        if(p.getX()==xMin(cuboid) || p.getX()==xMax(cuboid) && p.getY()>=yMin(cuboid) && p.getY()<=yMax(cuboid) && p.getZ()>=zMin(cuboid) && p.getZ()<=zMax(cuboid))
-            return true;
-        if(p.getX()>=xMin(cuboid) && p.getX()<=xMax(cuboid) && p.getY()==yMin(cuboid) || p.getY()<=yMax(cuboid) && p.getZ()>=zMin(cuboid) && p.getZ()<=zMax(cuboid))
-            return true;
-        if(p.getX()>=xMin(cuboid) && p.getX()<=xMax(cuboid) && p.getY()>=yMin(cuboid) && p.getY()<=yMax(cuboid) && p.getZ()==zMax(cuboid))
-            return true;
-        return false;
-    }
-
-    public boolean IsSmallCuboidInBigCuboid(List<Point> smallCuboid, List<Point> bigCuboid){
-        int count = 0;
-
-        for(int i = 0; i<smallCuboid.size(); i++){
-            if(!IsPointInCuboid(smallCuboid.get(i),bigCuboid))
-                return false;
-            if(smallCuboid.get(0).getZ() == smallCuboid.get(i).getZ())
-                count++;
-        }
-
-        if(count != 4)
-            return false;
-        return true;
-    }
-
-    public PlaneEquation PlaneXNotEqualZero(List<Point> cuboid){
-        for( int i = 0; i<cuboid.size(); i++){
-            if(cuboid.get(i).getX()!=0)
-                return new PlaneEquation(1,0,0,-cuboid.get(i).getX());
-
-        }
-        return null;
-    }
-
-    public PlaneEquation PlaneYNotEqualZero(List<Point> cuboid){
-        for( int i = 0; i<cuboid.size(); i++){
-            if(cuboid.get(i).getY()!=0)
-                return new PlaneEquation(0,1,0,-cuboid.get(i).getY());
-
-        }
-        return null;
-    }
-
-    public PlaneEquation PlaneZNotEqualZero(List<Point> cuboid){
-        for( int i = 0; i<cuboid.size(); i++){
-            if(cuboid.get(i).getZ()!=0)
-                return new PlaneEquation(0,0,1,-cuboid.get(i).getZ());
-
-        }
-        return null;
-    }
-
-    public PlaneEquation PlaneXEqualZero(){
+    static public PlaneEquation PlaneXEqualZero(){
         return new PlaneEquation(1,0,0,0);
     }
 
-    public PlaneEquation PlaneYEqualZero(){
+    static public PlaneEquation PlaneYEqualZero(){
         return new PlaneEquation(0,1,0,0);
     }
 
-    public PlaneEquation PlaneZEqualZero(){
+    static public PlaneEquation PlaneZEqualZero(){
         return new PlaneEquation(0,0,1,0);
     }
 
@@ -310,8 +194,8 @@ public class Math3D {
         return Math.toDegrees(Math.acos(Math.abs((p.getA()*l.getA()+p.getB()*l.getB()+p.getC()*l.getC())/(vp.lengthxyz()*vl.lengthxyz()))));
     }
 
-    public boolean IsPointInPyramidInCuboid(Point p, Pyramid pyramid, List<Point> cuboid){
-        if(PlaneXNotEqualZero(cuboid).IsIncludePoint(pyramid.getP()) || PlaneXEqualZero().IsIncludePoint(pyramid.getP())){
+    public boolean IsPointInPyramidInCuboid(Point p, Pyramid pyramid, Cuboid cuboid){
+        if(cuboid.PlaneXNotEqualZero().IsIncludePoint(pyramid.getP()) || PlaneXEqualZero().IsIncludePoint(pyramid.getP())){
             PlaneEquation pHorizontal = new PlaneEquation(pyramid.getP(),0,1,0);
             PlaneEquation pVertical = new PlaneEquation(pyramid.getP(), 0,0,1);
 
@@ -332,7 +216,7 @@ public class Math3D {
                 return true;
         }
 
-        if(PlaneYNotEqualZero(cuboid).IsIncludePoint(pyramid.getP()) || PlaneYEqualZero().IsIncludePoint(pyramid.getP())){
+        if(cuboid.PlaneYNotEqualZero().IsIncludePoint(pyramid.getP()) || PlaneYEqualZero().IsIncludePoint(pyramid.getP())){
             PlaneEquation pHorizontal = new PlaneEquation(pyramid.getP(),1,0,0);
             PlaneEquation pVertical = new PlaneEquation(pyramid.getP(), 0,0,1);
 
@@ -352,7 +236,7 @@ public class Math3D {
             if(ph-0.0000001 <= pyramid.getHorizontalFieldOfView()/2 && pv-0.000001<= pyramid.getVerticalFieldOfView()/2)
                 return true;
         }
-        if(PlaneZNotEqualZero(cuboid).IsIncludePoint(pyramid.getP())){
+        if(cuboid.PlaneZNotEqualZero().IsIncludePoint(pyramid.getP())){
             PlaneEquation pHorizontal = new PlaneEquation(pyramid.getP(),1,0,0);
             PlaneEquation pVertical = new PlaneEquation(pyramid.getP(), 0,1,0);
 
@@ -376,22 +260,6 @@ public class Math3D {
     }
 
 
-    public boolean IsStadardAxisCuboid(List<Point> list){
-        int count =0;
-        for(int i = 0; i< list.size();i++){
-            if(list.get(i).getX()==0 && list.get(i).getY()==0 && list.get(i).getZ() == 0)
-                count++;
-            if(list.get(i).getX()!=0 && list.get(i).getY()==0 && list.get(i).getZ() == 0)
-                count++;
-            if(list.get(i).getX()==0 && list.get(i).getY()!=0 && list.get(i).getZ() == 0)
-                count++;
-            if(list.get(i).getX()==0 && list.get(i).getY()==0 && list.get(i).getZ() != 0)
-                count++;
-        }
-        if(count ==4)
-            return true;
 
-        return false;
-    }
 
 }

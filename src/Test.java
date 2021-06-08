@@ -11,7 +11,7 @@ import java.util.List;
 
 public class Test {
     public static void main(String[] args) throws IOException {
-        Math3D tool = new Math3D();
+
         String url = "G:\\CameraProject\\src\\input.txt";
 
         // Đọc dữ liệu từ File với BufferedReader
@@ -29,9 +29,9 @@ public class Test {
         }catch (Exception ex){
             System.out.println("Không tìm thấy file");
         }
-        for(int i = 0 ; i < listLine.size(); i++){
-            System.out.println(listLine.get(i));
-        }
+//        for(int i = 0 ; i < listLine.size(); i++){
+//            System.out.println(listLine.get(i));
+//        }
         String str = listLine.get(0).replaceFirst("\\(","");
         String str1 = str.substring(0, str.length()-1);
         String [] points = str1.split("\\) \\(");
@@ -40,8 +40,11 @@ public class Test {
             String [] xyz = points[i].split(", ");
             listPointRoom.add(new Point(Double.parseDouble(xyz[0]),Double.parseDouble(xyz[1]),Double.parseDouble(xyz[2])));
         }
-        System.out.println(tool.IsStadardAxisCuboid(listPointRoom));
+        Math3D tool = new Math3D();
         System.out.println(tool.IsCuboid(listPointRoom));
+        Cuboid cuboid = new Cuboid(listPointRoom);
+        System.out.println(cuboid.IsStadardAxisCuboid());
+
         System.out.println(Integer.parseInt(listLine.get(1)));
         int i;
 
@@ -56,12 +59,12 @@ public class Test {
                 listPointObject.add(new Point(Double.parseDouble(xyz[0]),Double.parseDouble(xyz[1]),Double.parseDouble(xyz[2])));
             }
             object3DList.add(new Object3D(listPointObject));
-            System.out.println(tool.IsCuboid(listPointObject));
-            System.out.println(tool.IsSmallCuboidInBigCuboid(listPointObject,listPointRoom));
+//            System.out.println(tool.IsCuboid(listPointObject));
+//            System.out.println(tool.IsSmallCuboidInBigCuboid(listPointObject,listPointRoom));
 
         }
+
         System.out.println(object3DList.get(0).IsInvalidIn(object3DList));
-        System.out.println(object3DList.get(1).IsInvalidIn(object3DList));
 
         int k = i+1;
         List<Pyramid> pyramidList = new ArrayList<Pyramid>(8);
@@ -71,14 +74,14 @@ public class Test {
             String [] xyz = str2.split(", ");
             String [] view = cameraSpec[1].split(" ");
             Point cameraPoint = new Point(Double.parseDouble(xyz[0]),Double.parseDouble(xyz[1]),Double.parseDouble(xyz[2]));
-            System.out.println(tool.IsPointInWall(cameraPoint,listPointRoom));
+          System.out.println(cuboid.IsPointInWall(cameraPoint));
             System.out.println(Double.parseDouble(view[0])+", "+Double.parseDouble(view[1]));
             pyramidList.add(new Pyramid(cameraPoint,Double.parseDouble(view[0]),Double.parseDouble(view[1])));
 
         }
-        Point testPoint = new Point(2,0,1);
-        boolean abv = tool.IsPointInPyramidInCuboid(testPoint,pyramidList.get(1),listPointRoom);
-        System.out.println(abv);
+        Point testPoint = new Point(0.24,0,1);
+        System.out.println(object3DList.get(0).IsThrouthLineSegment(pyramidList.get(0),testPoint,cuboid));
+
     }
 
 }

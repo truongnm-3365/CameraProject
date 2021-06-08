@@ -1,3 +1,4 @@
+import java.util.Objects;
 
 public class PlaneEquation {
     private double a;
@@ -7,7 +8,6 @@ public class PlaneEquation {
     private Point p1;
     private Point p2;
     private Point p3;
-    private Math3D tool = new Math3D();
     public PlaneEquation(double a, double b, double c, double d) {    // ax + by + cz + d = 0
         this.a = a;
         this.b = b;
@@ -16,6 +16,7 @@ public class PlaneEquation {
     }
 
     public PlaneEquation(Point p1, Point p2, Point p3){
+        Math3D tool = new Math3D();
         Vector3D a1 = new Vector3D(p1,p2);
         Vector3D a2 = new Vector3D(p1,p3);
         Vector3D dirProVect = tool.VectorDirectProduct(a1,a2);
@@ -88,5 +89,14 @@ public class PlaneEquation {
             return true;
         return false;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        PlaneEquation that = (PlaneEquation) o;
+        return Math.abs(that.a-a) <= 0.0001 && Math.abs(that.b-b) <= 0.0001 && Math.abs(that.c-c) <= 0.0001 && Math.abs(that.d-d) <= 0.0001;
+    }
+
 
 }

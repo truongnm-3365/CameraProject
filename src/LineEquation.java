@@ -1,3 +1,5 @@
+import java.util.List;
+
 public class LineEquation {
     private Point p;
     private Point q;
@@ -66,4 +68,18 @@ public class LineEquation {
     public Vector3D VectorDirect(){
         return new Vector3D(this.a,this.b,this.c);
     }
+
+    public Point IntersectionWithPlane(PlaneEquation planeEquation){
+        double t,t1,t2;
+        t1 = -planeEquation.getA()*p.getX() -planeEquation.getB()*p.getY() -planeEquation.getC()*p.getZ() - planeEquation.getD();
+        t2 =  planeEquation.getA()*a+ planeEquation.getB()*b + planeEquation.getC()*c;
+        try {
+            t=t1/t2;
+            return new Point(p.getX()+a*t, p.getY()+b*t, p.getZ()+c*t);
+        }catch (Exception e){
+            return null;
+        }
+
+    }
+
 }
