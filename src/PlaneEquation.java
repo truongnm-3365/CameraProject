@@ -95,7 +95,13 @@ public class PlaneEquation {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         PlaneEquation that = (PlaneEquation) o;
-        return Math.abs(that.a-a) <= 0.0001 && Math.abs(that.b-b) <= 0.0001 && Math.abs(that.c-c) <= 0.0001 && Math.abs(that.d-d) <= 0.0001;
+        return Math.abs(that.a-a) <= 0.0000001 && Math.abs(that.b-b) <= 0.0000001 && Math.abs(that.c-c) <= 0.000001 && Math.abs(that.d-d) <= 0.000001;
+    }
+
+    public double angleWithPlane(PlaneEquation p){
+        Vector3D vp = new Vector3D(p.getA(),p.getB(),p.getC());
+        Vector3D vp1 = new Vector3D(a,b,c);
+        return Math.toDegrees(Math.acos(Math.abs((p.getA()*a+p.getB()*b+p.getC()*c)/(vp.lengthxyz()*vp1.lengthxyz()))));
     }
 
 

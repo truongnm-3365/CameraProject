@@ -86,7 +86,7 @@ public class Cuboid {
         return false;
     }
 
-    public boolean IsPointInWall(Point p){
+    public boolean IsPointInFaceNotBottom(Point p){
         if(p.getX()==xMin() || p.getX()==xMax() && p.getY()>=yMin() && p.getY()<=yMax() && p.getZ()>=zMin() && p.getZ()<=zMax())
             return true;
         if(p.getX()>=xMin() && p.getX()<=xMax() && p.getY()==yMin() || p.getY()==yMax() && p.getZ()>=zMin() && p.getZ()<=zMax())
@@ -95,6 +95,7 @@ public class Cuboid {
             return true;
         return false;
     }
+
     public boolean IsPointInFace(Point p){
         if((p.getX()==xMin() || p.getX()==xMax()) && p.getY()>=yMin() && p.getY()<=yMax() && p.getZ()>=zMin() && p.getZ()<=zMax())
             return true;

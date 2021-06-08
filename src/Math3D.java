@@ -144,7 +144,7 @@ public class Math3D {
                 c2 = edge(p,p2,listPoint.get(0),listPoint.get(1), listPoint.get(2), listPoint.get(3));
                 c3 = edge(p,p3,listPoint.get(0), listPoint.get(1),listPoint.get(2),listPoint.get(3));
                 c4 = edge(p,p4,listPoint.get(0),listPoint.get(1),listPoint.get(2), listPoint.get(3));
-                if(c1 != 0 && c2 != 0 && c3 != 0 && c4!= 0 && Math.abs(c1 - c2) < 0.0001 && Math.abs(c2 - c3) < 0.0001 && Math.abs(c3 - c4) < 0.0001)
+                if(c1 != 0 && c2 != 0 && c3 != 0 && c4!= 0 && Math.abs(c1 - c2) < 0.000001 && Math.abs(c2 - c3) < 0.00001 && Math.abs(c3 - c4) < 0.00001)
                     return true;
                 }
             }
@@ -152,7 +152,7 @@ public class Math3D {
         return false;
     }
 
-    public double edge(PlaneEquation p, Point o, Point d1, Point d2, Point d3, Point d4){
+    private double edge(PlaneEquation p, Point o, Point d1, Point d2, Point d3, Point d4){
         Vector3D od1 = new Vector3D(o,d1);
         Vector3D od2 = new Vector3D(o,d2);
         Vector3D od3 = new Vector3D(o,d3);
@@ -188,12 +188,6 @@ public class Math3D {
         return new PlaneEquation(0,0,1,0);
     }
 
-    public double angleBetweenLineAndPlane(PlaneEquation l,PlaneEquation p){
-        Vector3D vp = new Vector3D(p.getA(),p.getB(),p.getC());
-        Vector3D vl = new Vector3D(l.getA(),l.getB(),l.getC());
-        return Math.toDegrees(Math.acos(Math.abs((p.getA()*l.getA()+p.getB()*l.getB()+p.getC()*l.getC())/(vp.lengthxyz()*vl.lengthxyz()))));
-    }
-
     public boolean IsPointInPyramidInCuboid(Point p, Pyramid pyramid, Cuboid cuboid){
         if(cuboid.PlaneXNotEqualZero().IsIncludePoint(pyramid.getP()) || PlaneXEqualZero().IsIncludePoint(pyramid.getP())){
             PlaneEquation pHorizontal = new PlaneEquation(pyramid.getP(),0,1,0);
@@ -209,8 +203,8 @@ public class Math3D {
             PlaneEquation planeIncludeP1 = new PlaneEquation(p,directProduct1.getX(),directProduct1.getY(),directProduct1.getZ());
             PlaneEquation planeIncludeP2 = new PlaneEquation(p,directProduct2.getX(),directProduct2.getY(),directProduct2.getZ());
 
-            double ph = angleBetweenLineAndPlane(planeIncludeP1,pHorizontal);
-            double pv = angleBetweenLineAndPlane(planeIncludeP2,pVertical);
+            double ph = planeIncludeP1.angleWithPlane(pHorizontal);
+            double pv = planeIncludeP2.angleWithPlane(pVertical);
 
             if(ph - 0.000001 <= pyramid.getHorizontalFieldOfView()/2 && pv - 0.0000001<= pyramid.getVerticalFieldOfView()/2)
                 return true;
@@ -230,8 +224,8 @@ public class Math3D {
             PlaneEquation planeIncludeP1 = new PlaneEquation(p,directProduct1.getX(),directProduct1.getY(),directProduct1.getZ());
             PlaneEquation planeIncludeP2 = new PlaneEquation(p,directProduct2.getX(),directProduct2.getY(),directProduct2.getZ());
 
-            double ph = angleBetweenLineAndPlane(planeIncludeP1,pHorizontal);
-            double pv = angleBetweenLineAndPlane(planeIncludeP2,pVertical);
+            double ph = planeIncludeP1.angleWithPlane(pHorizontal);
+            double pv = planeIncludeP2.angleWithPlane(pVertical);
 
             if(ph-0.0000001 <= pyramid.getHorizontalFieldOfView()/2 && pv-0.000001<= pyramid.getVerticalFieldOfView()/2)
                 return true;
@@ -250,8 +244,8 @@ public class Math3D {
             PlaneEquation planeIncludeP1 = new PlaneEquation(p,directProduct1.getX(),directProduct1.getY(),directProduct1.getZ());
             PlaneEquation planeIncludeP2 = new PlaneEquation(p,directProduct2.getX(),directProduct2.getY(),directProduct2.getZ());
 
-            double ph = angleBetweenLineAndPlane(planeIncludeP1,pHorizontal);
-            double pv = angleBetweenLineAndPlane(planeIncludeP2,pVertical);
+            double ph = planeIncludeP1.angleWithPlane(pHorizontal);
+            double pv = planeIncludeP2.angleWithPlane(pVertical);
 
             if(ph -0.0000001 <= pyramid.getHorizontalFieldOfView()/2 && pv - 0.0000001 <= pyramid.getVerticalFieldOfView()/2)
                 return true;

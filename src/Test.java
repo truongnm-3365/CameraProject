@@ -74,13 +74,31 @@ public class Test {
             String [] xyz = str2.split(", ");
             String [] view = cameraSpec[1].split(" ");
             Point cameraPoint = new Point(Double.parseDouble(xyz[0]),Double.parseDouble(xyz[1]),Double.parseDouble(xyz[2]));
-          System.out.println(cuboid.IsPointInWall(cameraPoint));
+          System.out.println(cuboid.IsPointInFaceNotBottom(cameraPoint));
             System.out.println(Double.parseDouble(view[0])+", "+Double.parseDouble(view[1]));
             pyramidList.add(new Pyramid(cameraPoint,Double.parseDouble(view[0]),Double.parseDouble(view[1])));
 
         }
-        Point testPoint = new Point(0.24,0,1);
-        System.out.println(object3DList.get(0).IsThrouthLineSegment(pyramidList.get(0),testPoint,cuboid));
+        Point testPoint = new Point(2,0,1);
+        System.out.println(testPoint.IsSeenByCamera(pyramidList,cuboid,object3DList));
+        double totalPoint = 0;
+        double seenPoint = 0;
+
+        for(double x = cuboid.xMin();x<=cuboid.xMax();x=x+0.005)
+        {
+            for(double y = cuboid.yMin();y<=cuboid.yMax();y=y+0.005)
+            {
+                for(double z = cuboid.zMin();z<=cuboid.zMax();z=z+0.005){
+                    totalPoint++;
+                    Point point = new Point(x,y,z);
+                    if(point.IsSeenByCamera(pyramidList,cuboid,object3DList))
+                        seenPoint++;
+                }
+            }
+
+        }
+
+        System.out.println((seenPoint/totalPoint)*100);
 
     }
 

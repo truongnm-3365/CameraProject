@@ -44,7 +44,7 @@ public class Point {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Point point = (Point) o;
-        return Math.abs(point.getX()-this.x) < 0.0001 && Math.abs(point.getY() - this.y) < 0.0001 && Math.abs(point.getZ()- this.z) < 0.0001;
+        return Math.abs(point.getX()-this.x) < 0.000001 && Math.abs(point.getY() - this.y) < 0.000001 && Math.abs(point.getZ()- this.z) < 0.000001;
     }
 
 
@@ -53,5 +53,19 @@ public class Point {
         return Math.abs(this.x*planeEquation.getA()+ this.y* planeEquation.getB()+ this.z* planeEquation.getC()+ planeEquation.getD())/d;
     }
 
+    public boolean IsSeenByCamera(List<Pyramid> pyramidList,Cuboid cuboid,List<Object3D> object3DList){
+        int check = 0;
+        for(int i = 0;i<pyramidList.size();i++){
+            for (int j = 0;j<object3DList.size();j++){
+                if(object3DList.get(j).IsThrouthLineSegment(pyramidList.get(i),this,cuboid)){
+                    check ++;
+                    break;
+                }
+            }
+        }
+        if(check == pyramidList.size())
+            return false;
 
+        return true;
+    }
 }
